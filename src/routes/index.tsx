@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Typography } from "@mui/material";
 import { Spacing } from "../constants/spacing.ts";
-import { CharactersTable } from "../components/CharactersTable.tsx";
+import { CharactersTable } from "../components/characters/CharactersTable.tsx";
 
 export const Route = createFileRoute("/")({
   component: Index,

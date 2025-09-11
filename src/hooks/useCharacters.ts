@@ -24,7 +24,7 @@ export const useCharacters = (pageIndex: number) => {
     queryFn: () => fetchCharacters(url),
   });
 
-  console.log("result", result);
+  // console.log("result", result);
 
   return result;
 };

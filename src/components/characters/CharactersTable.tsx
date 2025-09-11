@@ -1,44 +1,32 @@
 import {
-  createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
-import type { Character } from "../types/character.ts";
-import { Box, Button, Typography } from "@mui/material";
-import { useCharacters } from "../hooks/useCharacters.ts";
-import { Spacing } from "../constants/spacing.ts";
-import { usePagination } from "../hooks/usePagination.ts";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { useCharacters } from "../../hooks/useCharacters.ts";
+import { Spacing } from "../../constants/spacing.ts";
+import { usePagination } from "../../hooks/usePagination.ts";
+import type { CharacterRow } from "./columns.ts";
+import { columns } from "./columns.ts";
+import { useFilters } from "../../hooks/useFilters.ts";
+import type { ChangeEvent } from "react";
 
-// row shape
-type CharacterRow = Pick<Character, "id" | "name" | "status" | "species">;
-
-const columnHelper = createColumnHelper<CharacterRow>();
-
-const columns = [
-  columnHelper.accessor((row) => row.name, {
-    id: "name",
-    header: () => "Name",
-    cell: (info) => info.renderValue(),
-    // footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor((row) => row.status, {
-    id: "status",
-    header: () => "Status",
-    cell: (info) => info.renderValue(),
-  }),
-  columnHelper.accessor((row) => row.species, {
-    id: "species",
-    header: () => "Species",
-    cell: (info) => info.renderValue(),
-  }),
-];
+interface ColumnFilter {
+  id: string;
+  value: unknown;
+}
+type ColumnFiltersState = ColumnFilter[];
 
 export const CharactersTable = () => {
   const { pagination, setPreviousPage, setNextPage, setPagination } =
     usePagination();
+
+  const { columnFilters, setValueByColumnId, getValueByColumnId } =
+    useFilters();
 
   const charactersResult = useCharacters(
     pagination.pageIndex,
@@ -52,15 +40,18 @@ export const CharactersTable = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
-    // rowCount: dataQuery.data?.rowCount,
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
     state: {
-      //...
       pagination,
+      columnFilters,
     },
     pageCount: pagesCount,
+    getFilteredRowModel: getFilteredRowModel(),
+    // onColumnFiltersChange: setColumnFilters,
   });
+
+  console.log("columnFilters: ", table.getState().columnFilters);
 
   const { getHeaderGroups, getRowModel } = table;
   const headerGroup = getHeaderGroups()[0];
@@ -75,6 +66,30 @@ export const CharactersTable = () => {
         alignItems: "center",
       }}
     >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          width: "30%",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+        }}
+      >
+        <TextField
+          label="Name"
+          variant="outlined"
+          value={getValueByColumnId("name")}
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            setValueByColumnId("name", event.target.value)
+          }
+          placeholder="Filter by name"
+          sx={{
+            "& .MuiInputLabel-root": {
+              color: "primary.main", // default
+            },
+          }}
+        />
+      </Box>
       <Box component="table" sx={{ width: "50%" }}>
         <thead>
           <tr>
