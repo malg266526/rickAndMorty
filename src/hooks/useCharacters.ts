@@ -17,7 +17,7 @@ const fetchCharacters: FetchCharacters = (url) =>
 export const useCharacters = (pageIndex: number) => {
   const url = `${CharactersUrlApi}/?page=${pageIndex}`;
 
-  console.log("url", url);
+  //console.log("url", url);
 
   const result = useQuery({
     queryKey: ["characters", pageIndex],

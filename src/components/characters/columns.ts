@@ -1,4 +1,3 @@
-// row shape
 import { createColumnHelper } from "@tanstack/react-table";
 import type { Character } from "../../types/character.ts";
 
@@ -19,6 +18,12 @@ export const columns = [
     id: "status",
     header: () => "Status",
     cell: (info) => info.renderValue(),
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue || filterValue.length === 0) return true;
+
+      console.log("filterValue", filterValue, row, columnId);
+      return true;
+    },
   }),
   columnHelper.accessor((row) => row.species, {
     id: "species",

@@ -6,27 +6,47 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  Select,
+  TextField,
+  Typography,
+  MenuItem,
+  ListItemText,
+} from "@mui/material";
 import { useCharacters } from "../../hooks/useCharacters.ts";
 import { Spacing } from "../../constants/spacing.ts";
 import { usePagination } from "../../hooks/usePagination.ts";
 import type { CharacterRow } from "./columns.ts";
 import { columns } from "./columns.ts";
-import { useFilters } from "../../hooks/useFilters.ts";
-import type { ChangeEvent } from "react";
+import { statuses, useFilters } from "../../hooks/useFilters.ts";
 
-interface ColumnFilter {
-  id: string;
-  value: unknown;
-}
-type ColumnFiltersState = ColumnFilter[];
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 export const CharactersTable = () => {
   const { pagination, setPreviousPage, setNextPage, setPagination } =
     usePagination();
 
-  const { columnFilters, setValueByColumnId, getValueByColumnId } =
-    useFilters();
+  const {
+    columnFilters,
+    setValueByColumnId,
+    getColumnById,
+    setMultipleByColumnId,
+  } = useFilters();
 
   const charactersResult = useCharacters(
     pagination.pageIndex,
@@ -48,10 +68,7 @@ export const CharactersTable = () => {
     },
     pageCount: pagesCount,
     getFilteredRowModel: getFilteredRowModel(),
-    // onColumnFiltersChange: setColumnFilters,
   });
-
-  console.log("columnFilters: ", table.getState().columnFilters);
 
   const { getHeaderGroups, getRowModel } = table;
   const headerGroup = getHeaderGroups()[0];
@@ -78,9 +95,12 @@ export const CharactersTable = () => {
         <TextField
           label="Name"
           variant="outlined"
-          value={getValueByColumnId("name")}
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            setValueByColumnId("name", event.target.value)
+          value={getColumnById("name")?.value}
+          onChange={(event) =>
+            setValueByColumnId({
+              id: "name",
+              value: event.target.value,
+            })
           }
           placeholder="Filter by name"
           sx={{
@@ -89,6 +109,37 @@ export const CharactersTable = () => {
             },
           }}
         />
+        <FormControl sx={{ m: 1, width: 300 }}>
+          <InputLabel
+            sx={{ color: "primary.main" }}
+            id="character-status-checkbox-label"
+          >
+            Status
+          </InputLabel>
+          <Select
+            labelId="demo-multiple-checkbox-label"
+            id="demo-multiple-checkbox"
+            multiple
+            value={getColumnById("status")?.value}
+            defaultValue={[]}
+            onChange={(event: any) => {
+              console.log("value", event.target.value);
+              setMultipleByColumnId("status", event.target.value);
+            }}
+            input={<OutlinedInput label="Status" />}
+            renderValue={(selected) => selected.join(", ")}
+            MenuProps={MenuProps}
+          >
+            {statuses.map((name) => (
+              <MenuItem key={name} value={name}>
+                <Checkbox
+                  checked={getColumnById("status")?.value.includes(name)}
+                />
+                <ListItemText primary={name} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Box>
       <Box component="table" sx={{ width: "50%" }}>
         <thead>
