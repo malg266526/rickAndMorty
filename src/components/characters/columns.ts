@@ -12,7 +12,6 @@ export const columns = [
     id: "name",
     header: () => "Name",
     cell: (info) => info.renderValue(),
-    // footer: (info) => info.column.id,
   }),
   columnHelper.accessor((row) => row.status, {
     id: "status",
@@ -20,9 +19,7 @@ export const columns = [
     cell: (info) => info.renderValue(),
     filterFn: (row, columnId, filterValue) => {
       if (!filterValue || filterValue.length === 0) return true;
-
-      console.log("filterValue", filterValue, row, columnId);
-      return true;
+      return filterValue.includes(row.getValue(columnId));
     },
   }),
   columnHelper.accessor((row) => row.species, {

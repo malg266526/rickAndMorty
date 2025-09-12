@@ -7,11 +7,9 @@ export type Pagination = {
 
 export const usePagination = () => {
   const [pagination, setPagination] = useState({
-    pageIndex: 1, //initial page index
-    pageSize: 20, //default page size
+    pageIndex: 1,
+    pageSize: 20,
   });
-
-  console.log("pagination", pagination.pageSize);
 
   const setPreviousPage = () => {
     setPagination({
