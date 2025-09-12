@@ -8,16 +8,15 @@ import {
 
 import {
   Box,
-  Button,
   Checkbox,
   FormControl,
   InputLabel,
   OutlinedInput,
   Select,
   TextField,
-  Typography,
   MenuItem,
   ListItemText,
+  Button,
 } from "@mui/material";
 import { useCharacters } from "../../hooks/useCharacters.ts";
 import { Spacing } from "../../constants/spacing.ts";
@@ -25,6 +24,7 @@ import { usePagination } from "../../hooks/usePagination.ts";
 import type { CharacterRow } from "./columns.ts";
 import { columns } from "./columns.ts";
 import { statuses, useFilters } from "../../hooks/useFilters.ts";
+import { Pagination } from "./Pagination.tsx";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -38,19 +38,25 @@ const MenuProps = {
 };
 
 export const CharactersTable = () => {
-  const { pagination, setPreviousPage, setNextPage, setPagination } =
-    usePagination();
+  const {
+    pagination,
+    setPreviousPage,
+    setNextPage,
+    setPagination,
+    setPageSize,
+  } = usePagination();
 
   const {
     columnFilters,
     setValueByColumnId,
     getColumnById,
     setMultipleByColumnId,
+    clearFilters,
   } = useFilters();
 
   const charactersResult = useCharacters(
     pagination.pageIndex,
-    //pagination.pageSize,
+    pagination.pageSize,
   );
 
   const pagesCount = charactersResult.data?.info.pages;
@@ -117,13 +123,10 @@ export const CharactersTable = () => {
             Status
           </InputLabel>
           <Select
-            labelId="demo-multiple-checkbox-label"
-            id="demo-multiple-checkbox"
             multiple
             value={getColumnById("status")?.value}
             defaultValue={[]}
             onChange={(event: any) => {
-              console.log("value", event.target.value);
               setMultipleByColumnId("status", event.target.value);
             }}
             input={<OutlinedInput label="Status" />}
@@ -140,6 +143,9 @@ export const CharactersTable = () => {
             ))}
           </Select>
         </FormControl>
+        <Button sx={{ width: 200 }} onClick={clearFilters}>
+          Clear Filters
+        </Button>
       </Box>
       <Box component="table" sx={{ width: "50%" }}>
         <thead>
@@ -169,28 +175,13 @@ export const CharactersTable = () => {
         </tbody>
       </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          width: "30%",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-        }}
-      >
-        <Button onClick={setPreviousPage} disabled={pagination.pageIndex === 0}>
-          Prev
-        </Button>
-        <Typography sx={{ minWidth: 100 }}>
-          page {pagination.pageIndex} / {pagesCount}
-        </Typography>
-        <Button
-          onClick={setNextPage}
-          disabled={pagination.pageIndex === pagesCount}
-        >
-          Next
-        </Button>
-      </Box>
+      <Pagination
+        pagination={pagination}
+        setPreviousPage={setPreviousPage}
+        pagesCount={pagesCount}
+        setNextPage={setNextPage}
+        setPageSize={setPageSize}
+      />
     </Box>
   );
 };

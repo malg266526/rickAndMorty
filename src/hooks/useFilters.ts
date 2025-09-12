@@ -67,6 +67,7 @@ export const useFilters = () => {
   function getColumnById(
     id: "status",
   ): Extract<ColumnFilter, { id: typeof id }>;
+
   function getColumnById<ColumnId extends ColumnFilter["id"]>(
     columnId: ColumnId,
   ) {
@@ -75,30 +76,17 @@ export const useFilters = () => {
     }
     return columnFilters.find((column) => column.id === columnId);
   }
-  // const getColumnById = <ColumnId extends ColumnFilter["id"]>(
-  //   columnId: ColumnId,
-  // ): Extract<ColumnFilter, { id: ColumnId }> | undefined => {
-  //   if (columnId === "status") {
-  //     // FIXME: conditional return in functions requires explicit types on each return
-  //     return columnFilters.find((column) => column.id === columnId) as
-  //       | Extract<ColumnFilter, { id: ColumnId }>
-  //       | undefined;
-  //   }
-  //   // FIXME: conditional return in functions requires explicit types on each return
-  //   return columnFilters.find((column) => column.id === columnId) as
-  //     | Extract<ColumnFilter, { id: ColumnId }>
-  //     | undefined;
-  // };
 
-  const filters = useMemo(
+  const clearFilters = () => setColumnFilters(filtersInitialState);
+
+  return useMemo(
     () => ({
       columnFilters,
       setValueByColumnId,
       getColumnById,
       setMultipleByColumnId,
+      clearFilters,
     }),
     [columnFilters],
   );
-
-  return filters;
 };
