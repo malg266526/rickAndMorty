@@ -7,7 +7,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import type { ChangeEvent } from "react";
+import type { SelectChangeEvent } from "@mui/material";
 import type { Pagination as PaginationType } from "../../hooks/usePagination.ts";
 
 const PageSizes = [5, 10, 20, 30, 40];
@@ -55,7 +55,7 @@ export const Pagination = ({
         <Select<number>
           value={pagination.pageSize}
           label="Age"
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+          onChange={(event: SelectChangeEvent<number>) =>
             setPageSize(Number(event.target.value))
           }
         >
