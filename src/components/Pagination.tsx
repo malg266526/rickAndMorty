@@ -8,25 +8,60 @@ import {
   Typography,
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
-import type { Pagination as PaginationType } from "../../hooks/usePagination.ts";
+import { useUrlUpdate } from "../hooks/useUrlUpdate.ts";
 
 const PageSizes = [5, 10, 20, 30, 40];
+const FIRST_PAGE_INDEX = 1;
+
+export type PaginationType = {
+  pageIndex: number;
+  pageSize: number;
+};
 
 interface PaginationProps {
   pagination: PaginationType;
-  setPreviousPage: () => void;
   pagesCount: number;
-  setNextPage: () => void;
-  setPageSize: (size: number) => void;
+  setPagination: (pagination: PaginationType) => void;
 }
 
 export const Pagination = ({
   pagination,
-  setPreviousPage,
-  setNextPage,
   pagesCount,
-  setPageSize,
+  setPagination,
 }: PaginationProps) => {
+  const { updateUrl } = useUrlUpdate();
+
+  const setPage = (newPageIndex: number, newPageSize: number) => {
+    setPagination({
+      pageIndex: newPageIndex,
+      pageSize: newPageSize,
+    });
+
+    updateUrl({
+      pageIndex: newPageIndex,
+      pageSize: newPageSize,
+    });
+  };
+
+  const setPreviousPage = () => {
+    const newPageIndex = pagination.pageIndex - 1;
+    const newPageSize = pagination.pageSize;
+
+    setPage(newPageIndex, newPageSize);
+  };
+
+  const setNextPage = () => {
+    const newPageIndex = pagination.pageIndex + 1;
+    const newPageSize = pagination.pageSize;
+
+    setPage(newPageIndex, newPageSize);
+  };
+
+  const setPageSize = (pageSize: number) => {
+    // reset pageIndex to first page when changing pageSize
+    setPage(FIRST_PAGE_INDEX, pageSize);
+  };
+
   return (
     <Box
       sx={{
@@ -51,10 +86,10 @@ export const Pagination = ({
       </Button>
 
       <FormControl sx={{ width: 120 }}>
-        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <InputLabel id="demo-simple-select-label">Page size</InputLabel>
         <Select<number>
           value={pagination.pageSize}
-          label="Age"
+          label="Page size"
           onChange={(event: SelectChangeEvent<number>) =>
             setPageSize(Number(event.target.value))
           }

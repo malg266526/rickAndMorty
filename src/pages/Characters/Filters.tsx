@@ -10,8 +10,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import type { Status } from "../../types/character.ts";
-import { Statuses as PossibleStatuses } from "../../hooks/useFilters.ts";
+import { StatusOptions as PossibleStatuses } from "../../hooks/useFilters.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

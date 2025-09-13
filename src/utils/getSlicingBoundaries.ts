@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 export const getSlicingBoundaries = (
   fetchedPage: number,
   serverPageSize: number,
@@ -13,11 +11,8 @@ export const getSlicingBoundaries = (
   const sliceToBeginning = pageSize * (pageIndex - 1) - firstItemIndex;
   const sliceToEnd = allFetchedItemsLastIndex - firstItemIndex;
 
-  return useMemo(
-    () => ({
-      top: sliceToBeginning,
-      end: sliceToEnd,
-    }),
-    [sliceToBeginning, sliceToEnd],
-  );
+  return {
+    top: sliceToBeginning,
+    end: sliceToEnd,
+  };
 };

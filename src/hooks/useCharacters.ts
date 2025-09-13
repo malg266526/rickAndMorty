@@ -1,14 +1,17 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import type { Character } from "../types/character.ts";
-import type { Pagination } from "../types/pagination.ts";
-import { findPagesToFetch } from "../components/utils/findPagesToFetch.ts";
-import { getSlicingBoundaries } from "../components/utils/getSlicingBoundaries.ts";
+import { findPagesToFetch } from "../utils/findPagesToFetch.ts";
+import { getSlicingBoundaries } from "../utils/getSlicingBoundaries.ts";
 
 const RickAndMortyApi = "https://rickandmortyapi.com/api";
 const CharactersUrlApi = `${RickAndMortyApi}/character`;
 
 export interface CharactersResponse {
-  info: Pagination;
+  info: {
+    count: number;
+    pages: number;
+    next: string;
+    prev: string;
+  };
   results: Character[];
 }
 
@@ -19,7 +22,9 @@ type UseQueryResult = ReturnType<typeof useQuery<CharactersResponse>>;
 type FetchCharacters = (url: string) => Promise<CharactersResponse>;
 const fetchCharacters: FetchCharacters = (url) =>
   fetch(url).then((response) => response.json());
-
+// usePaginatedDataRickAndMortyCharacters
+// param: (page: number) => fetchCharacters()
+// usePagination
 export const useCharacters = (pageIndex: number, pageSize: number) => {
   const allPagesToFetch = findPagesToFetch(
     pageIndex,
@@ -64,5 +69,6 @@ export const useCharacters = (pageIndex: number, pageSize: number) => {
     },
   };
 
+  // status: loading | error | success
   return { data: paginatedResult, isLoading, error: mergedErrors };
 };

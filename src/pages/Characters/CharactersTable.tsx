@@ -2,29 +2,32 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
 import { Box } from "@mui/material";
 import { useCharacters } from "../../hooks/useCharacters.ts";
 import { Spacing } from "../../constants/spacing.ts";
-import { usePagination } from "../../hooks/usePagination.ts";
 import type { CharacterRow } from "./columns.ts";
 import { columns } from "./columns.ts";
 import { useFilters } from "../../hooks/useFilters.ts";
-import { Pagination } from "./Pagination.tsx";
-import type { Status } from "../../types/character.ts";
+import { Pagination } from "../../components/Pagination.tsx";
 import { Filters } from "./Filters.tsx";
+import { useState } from "react";
+import { getRouteApi } from "@tanstack/react-router";
+
+const routeApi = getRouteApi("/");
+
+const FIRST_PAGE_INDEX = 1;
+const SERVER_PAGE_SIZE = 20;
 
 export const CharactersTable = () => {
-  const {
-    pagination,
-    setPreviousPage,
-    setNextPage,
-    setPagination,
-    setPageSize,
-  } = usePagination();
+  const search = routeApi.useSearch();
+
+  const [pagination, setPagination] = useState({
+    pageIndex: search.pageIndex || FIRST_PAGE_INDEX,
+    pageSize: search.pageSize || SERVER_PAGE_SIZE,
+  });
 
   const { columnFilters, setValueByColumnId, getColumnById, clearFilters } =
     useFilters();
@@ -41,13 +44,9 @@ export const CharactersTable = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
     state: {
-      pagination,
       columnFilters,
     },
-    pageCount: pagesCount,
     getFilteredRowModel: getFilteredRowModel(),
   });
 
@@ -109,10 +108,8 @@ export const CharactersTable = () => {
 
       <Pagination
         pagination={pagination}
-        setPreviousPage={setPreviousPage}
+        setPagination={setPagination}
         pagesCount={pagesCount}
-        setNextPage={setNextPage}
-        setPageSize={setPageSize}
       />
     </Box>
   );

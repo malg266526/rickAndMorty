@@ -1,5 +1,4 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import type { Character } from "../../types/character.ts";
 
 export type CharacterColumns = "id" | "name" | "status" | "species";
 

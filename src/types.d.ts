@@ -1,6 +1,6 @@
-export type Status = "Alive" | "Dead" | "unknown";
+type Status = "Alive" | "Dead" | "unknown";
 
-export interface Character {
+interface Character {
   id: number;
   name: string;
   status: Status;

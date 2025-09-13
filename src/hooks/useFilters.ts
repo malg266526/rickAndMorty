@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
-import type { Status } from "../types/character.ts";
+import { useUrlUpdate } from "./useUrlUpdate.ts";
+import { getRouteApi } from "@tanstack/react-router";
 
 type ColumnFilter =
   | {
@@ -13,19 +14,35 @@ type ColumnFilter =
 
 type ColumnFiltersState = ColumnFilter[];
 
-export const Statuses = ["Alive", "Dead", "unknown"] as const;
+// not validated by types
+export const StatusOptions = ["Alive", "Dead", "unknown"] as const;
 
-const filtersInitialState: ColumnFiltersState = [
-  {
-    id: "name",
-    value: "",
-  },
-  { id: "status", value: [] },
-];
+const getInitialFilters = (
+  name: string = "",
+  status: Status[] = [],
+): ColumnFiltersState => {
+  return [
+    {
+      id: "name",
+      value: name,
+    },
+    { id: "status", value: status },
+  ];
+};
+
+const routeApi = getRouteApi("/");
 
 export const useFilters = () => {
+  const search = routeApi.useSearch();
+
+  const { updateUrl, clearFilters: clearFilterParams } = useUrlUpdate();
+
+  const initialState: ColumnFiltersState = getInitialFilters(
+    search.name,
+    search.status,
+  );
   const [columnFilters, setColumnFilters] =
-    useState<ColumnFiltersState>(filtersInitialState);
+    useState<ColumnFiltersState>(initialState);
 
   const setValueByColumnId = useCallback(
     (filter: ColumnFilter) => {
@@ -37,8 +54,11 @@ export const useFilters = () => {
         return column;
       });
       setColumnFilters(updated);
+      updateUrl({
+        [filter.id]: filter.value,
+      });
     },
-    [columnFilters],
+    [columnFilters, updateUrl],
   );
 
   function getFilterById(id: "name"): Extract<ColumnFilter, { id: typeof id }>;
@@ -52,7 +72,10 @@ export const useFilters = () => {
     return columnFilters.find((column) => column.id === columnId);
   }
 
-  const clearFilters = () => setColumnFilters(filtersInitialState);
+  const clearFilters = useCallback(() => {
+    setColumnFilters(getInitialFilters());
+    clearFilterParams();
+  }, [clearFilterParams]);
 
   return useMemo(
     () => ({
@@ -61,6 +84,6 @@ export const useFilters = () => {
       getColumnById: getFilterById,
       clearFilters,
     }),
-    [columnFilters, getFilterById, setValueByColumnId],
+    [clearFilters, columnFilters, getFilterById, setValueByColumnId],
   );
 };
