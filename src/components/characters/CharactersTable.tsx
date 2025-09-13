@@ -65,7 +65,7 @@ export const CharactersTable = () => {
       }}
     >
       <Filters
-        name={getColumnById("name")?.value || ""}
+        name={getColumnById("name").value || ""}
         setName={(name: string) => {
           setValueByColumnId({
             id: "name",

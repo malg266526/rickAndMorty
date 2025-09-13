@@ -10,7 +10,6 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import type { SelectChangeEvent } from "@mui/material";
 import type { Status } from "../../types/character.ts";
 import { Statuses as PossibleStatuses } from "../../hooks/useFilters.ts";
 
@@ -75,9 +74,13 @@ export const Filters = ({
           multiple
           value={statuses}
           defaultValue={[]}
-          onChange={(event: SelectChangeEvent<Status[]>) => {
+          onChange={(event) => {
             const value = event.target.value;
-            setStatuses(value);
+            if (Array.isArray(value)) {
+              setStatuses(value);
+            } else {
+              setStatuses([]);
+            }
           }}
           input={<OutlinedInput label="Status" />}
           renderValue={(selected) => selected.join(", ")}

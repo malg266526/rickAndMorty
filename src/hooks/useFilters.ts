@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { Status } from "../types/character.ts";
 
 type ColumnFilter =
@@ -27,28 +27,28 @@ export const useFilters = () => {
   const [columnFilters, setColumnFilters] =
     useState<ColumnFiltersState>(filtersInitialState);
 
-  const setValueByColumnId = (filter: ColumnFilter) => {
-    const updated = columnFilters.map((column) => {
-      if (column.id === filter.id) {
-        return filter;
-      }
+  const setValueByColumnId = useCallback(
+    (filter: ColumnFilter) => {
+      const updated = columnFilters.map((column) => {
+        if (column.id === filter.id) {
+          return filter;
+        }
 
-      return column;
-    });
-    setColumnFilters(updated);
-  };
+        return column;
+      });
+      setColumnFilters(updated);
+    },
+    [columnFilters],
+  );
 
-  function getColumnById(id: "name"): Extract<ColumnFilter, { id: typeof id }>;
-  function getColumnById(
+  function getFilterById(id: "name"): Extract<ColumnFilter, { id: typeof id }>;
+  function getFilterById(
     id: "status",
   ): Extract<ColumnFilter, { id: typeof id }>;
 
-  function getColumnById<ColumnId extends ColumnFilter["id"]>(
+  function getFilterById<ColumnId extends ColumnFilter["id"]>(
     columnId: ColumnId,
   ) {
-    if (columnId === "status") {
-      return columnFilters.find((column) => column.id === columnId);
-    }
     return columnFilters.find((column) => column.id === columnId);
   }
 
@@ -58,9 +58,9 @@ export const useFilters = () => {
     () => ({
       columnFilters,
       setValueByColumnId,
-      getColumnById,
+      getColumnById: getFilterById,
       clearFilters,
     }),
-    [columnFilters, getColumnById, setValueByColumnId],
+    [columnFilters, getFilterById, setValueByColumnId],
   );
 };
