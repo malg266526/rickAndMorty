@@ -10,7 +10,7 @@ import {
 import type { SelectChangeEvent } from "@mui/material";
 import { useUrlUpdate } from "../hooks/useUrlUpdate.ts";
 
-const PageSizes = [5, 10, 20, 30, 40];
+const PageSizes = [2, 5, 10, 20, 30, 40];
 const FIRST_PAGE_INDEX = 1;
 
 export type PaginationType = {

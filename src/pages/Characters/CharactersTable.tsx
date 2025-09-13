@@ -6,33 +6,30 @@ import {
 } from "@tanstack/react-table";
 
 import { Box } from "@mui/material";
-import { useCharacters } from "../../hooks/useCharacters.ts";
+import { usePaginatedDataRickAndMortyCharacters } from "./usePaginatedDataRickAndMortyCharacters.ts";
 import { Spacing } from "../../constants/spacing.ts";
-import type { CharacterRow } from "./columns.ts";
-import { columns } from "./columns.ts";
+import type { CharacterRow } from "./columns.tsx";
+import { columns } from "./columns.tsx";
 import { useFilters } from "../../hooks/useFilters.ts";
 import { Pagination } from "../../components/Pagination.tsx";
+import type { PaginationType } from "../../components/Pagination.tsx";
 import { Filters } from "./Filters.tsx";
-import { useState } from "react";
-import { getRouteApi } from "@tanstack/react-router";
 
-const routeApi = getRouteApi("/");
+interface CharactersTableProps {
+  pagination: PaginationType;
+  setPagination: (pagination: PaginationType) => void;
+  characters: Character[];
+}
 
-const FIRST_PAGE_INDEX = 1;
-const SERVER_PAGE_SIZE = 20;
-
-export const CharactersTable = () => {
-  const search = routeApi.useSearch();
-
-  const [pagination, setPagination] = useState({
-    pageIndex: search.pageIndex || FIRST_PAGE_INDEX,
-    pageSize: search.pageSize || SERVER_PAGE_SIZE,
-  });
-
+export const CharactersTable = ({
+  pagination,
+  characters,
+  setPagination,
+}: CharactersTableProps) => {
   const { columnFilters, setValueByColumnId, getColumnById, clearFilters } =
     useFilters();
 
-  const charactersResult = useCharacters(
+  const charactersResult = usePaginatedDataRickAndMortyCharacters(
     pagination.pageIndex,
     pagination.pageSize,
   );
@@ -40,7 +37,7 @@ export const CharactersTable = () => {
   const pagesCount = charactersResult.data?.info.pages;
 
   const table = useReactTable<CharacterRow>({
-    data: charactersResult.data?.results || [],
+    data: characters || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,

@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
+import { ActionCell } from "./ActionCell.tsx";
 
 export type CharacterColumns = "id" | "name" | "status" | "species";
 
@@ -25,5 +26,11 @@ export const columns = [
     id: "species",
     header: () => "Species",
     cell: (info) => info.renderValue(),
+  }),
+  columnHelper.display({
+    id: "id",
+    cell: (props) => {
+      return <ActionCell id={props.row.original.id} />;
+    },
   }),
 ];
