@@ -45,6 +45,12 @@ export const usePaginatedDataRickAndMortyCharacters = (
     })),
   });
 
+  const refetch = () => {
+    responses.forEach((response) => response.refetch());
+  };
+
+  console.log("responses", responses);
+
   const mergedResults = responses
     .map((response) => response?.data?.results ?? [])
     .flat();
@@ -54,7 +60,6 @@ export const usePaginatedDataRickAndMortyCharacters = (
     .filter((response) => response.isError)
     .map((response) => response.error);
 
-  // Todo: handle
   const isLoading = responses.some((response) => response.isLoading);
 
   const { top, end } = getSlicingBoundaries(
@@ -80,6 +85,5 @@ export const usePaginatedDataRickAndMortyCharacters = (
     : mergedErrors.length > 0
       ? "error"
       : "success";
-  //status: loading | error | success
-  return { data: paginatedResult, status, error: mergedErrors };
+  return { data: paginatedResult, status, error: mergedErrors, refetch };
 };

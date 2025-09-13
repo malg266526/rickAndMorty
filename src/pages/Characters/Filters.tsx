@@ -44,7 +44,6 @@ export const Filters = ({
       sx={{
         display: "flex",
         flexDirection: "row",
-        width: "30%",
         justifyContent: "space-evenly",
         alignItems: "center",
       }}
@@ -93,7 +92,7 @@ export const Filters = ({
           ))}
         </Select>
       </FormControl>
-      <Button sx={{ width: 200 }} onClick={clearFilters}>
+      <Button sx={{ width: 200, height: 46 }} onClick={clearFilters}>
         Clear Filters
       </Button>
     </Box>

@@ -48,8 +48,6 @@ function Index() {
 
   const { status, data, error } = charactersResult;
 
-  console.log("charactersResult", charactersResult);
-
   return (
     <ErrorBoundary FallbackComponent={ErrorAlert}>
       <Container

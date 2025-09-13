@@ -5,7 +5,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Box } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { usePaginatedDataRickAndMortyCharacters } from "./usePaginatedDataRickAndMortyCharacters.ts";
 import { Spacing } from "../../constants/spacing.ts";
 import type { CharacterRow } from "./columns.tsx";
@@ -60,20 +60,32 @@ export const CharactersTable = ({
         alignItems: "center",
       }}
     >
-      <Filters
-        name={getColumnById("name").value || ""}
-        setName={(name: string) => {
-          setValueByColumnId({
-            id: "name",
-            value: name,
-          });
-        }}
-        statuses={getColumnById("status")?.value || []}
-        setStatuses={(statuses: Status[]) =>
-          setValueByColumnId({ id: "status", value: statuses })
-        }
-        clearFilters={clearFilters}
-      />
+      <Stack
+        direction="row"
+        sx={{ width: "50%", gap: Spacing.lg }}
+        alignItems="center"
+      >
+        <Filters
+          name={getColumnById("name").value || ""}
+          setName={(name: string) => {
+            setValueByColumnId({
+              id: "name",
+              value: name,
+            });
+          }}
+          statuses={getColumnById("status")?.value || []}
+          setStatuses={(statuses: Status[]) =>
+            setValueByColumnId({ id: "status", value: statuses })
+          }
+          clearFilters={clearFilters}
+        />
+        <Button
+          sx={{ width: 200, height: 46 }}
+          onClick={charactersResult.refetch}
+        >
+          Refresh data
+        </Button>
+      </Stack>
 
       <Box component="table" sx={{ width: "50%" }}>
         <thead>

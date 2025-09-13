@@ -1,12 +1,12 @@
 import { Stack, Typography } from "@mui/material";
 import React, { ReactNode } from "react";
 
-interface KeyValueInfo {
+interface InfoTupleProps {
   title: string;
   children: ReactNode;
 }
 
-export const KeyValueInfo = ({ title, children }: KeyValueInfo) => {
+export const InfoTuple = ({ title, children }: InfoTupleProps) => {
   return (
     <Stack
       direction="row"

@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { KeyValueInfo } from "../components/KeyValueInfo.tsx";
+import { InfoTuple } from "../components/InfoTuple.tsx";
 
 export const Route = createFileRoute("/character/$id")({
   component: CharacterId,
@@ -17,8 +17,6 @@ export const Route = createFileRoute("/character/$id")({
 
 function CharacterId() {
   const { id } = Route.useParams();
-
-  console.log("params", id);
 
   const characterData = useCharacterById(id);
   const { status, data } = characterData;
@@ -53,13 +51,11 @@ function CharacterId() {
           </Typography>
           <Stack direction="row" spacing={Spacing.md}>
             <Paper sx={{ padding: Spacing.md, width: "50%" }}>
-              <KeyValueInfo title="Gender">{gender}</KeyValueInfo>
-              <KeyValueInfo title="Status">{characterStatus}</KeyValueInfo>
-              <KeyValueInfo title="Species">{species}</KeyValueInfo>
-              <KeyValueInfo title="Origin">{origin.name}</KeyValueInfo>
-              <KeyValueInfo title="Played in">
-                {episode.length} episodes
-              </KeyValueInfo>
+              <InfoTuple title="Gender">{gender}</InfoTuple>
+              <InfoTuple title="Status">{characterStatus}</InfoTuple>
+              <InfoTuple title="Species">{species}</InfoTuple>
+              <InfoTuple title="Origin">{origin.name}</InfoTuple>
+              <InfoTuple title="Played in">{episode.length} episodes</InfoTuple>
             </Paper>
 
             <Paper sx={{ padding: Spacing.md, width: "30%" }}>
