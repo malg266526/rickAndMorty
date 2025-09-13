@@ -13,7 +13,14 @@ export const Menu = () => {
         backgroundColor: "primary.main",
       }}
     >
-      <Link to="/" className="[&.active]:font-bold">
+      <Link
+        to="/"
+        search={{
+          pageSize: 0,
+          pageIndex: 0,
+        }}
+        className="[&.active]:font-bold"
+      >
         <Typography sx={{ minWidth: 100, color: "text.secondary" }}>
           Home
         </Typography>

@@ -1,10 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Container, Typography } from "@mui/material";
+import zod from "zod";
 import { Spacing } from "../constants/spacing.ts";
 import { CharactersTable } from "../components/characters/CharactersTable.tsx";
 
+const searchParamsSchema = zod.object({
+  pageIndex: zod.number().optional(),
+  pageSize: zod.number().optional(),
+});
+
 export const Route = createFileRoute("/")({
   component: Index,
+  validateSearch: searchParamsSchema,
 });
 
 function Index() {
