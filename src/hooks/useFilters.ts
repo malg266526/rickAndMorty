@@ -1,9 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
-import type { CharacterRow } from "../components/characters/columns.ts";
-
-type MultipleValuesFilters = "status";
-
-export type PossibleStatuses = CharacterRow["status"];
+import { useMemo, useState } from "react";
+import type { Status } from "../types/character.ts";
 
 type ColumnFilter =
   | {
@@ -12,12 +8,12 @@ type ColumnFilter =
     }
   | {
       id: "status";
-      value: PossibleStatuses[];
+      value: Status[];
     };
 
 type ColumnFiltersState = ColumnFilter[];
 
-export const statuses = ["Alive", "Dead", "unknown"] as const;
+export const Statuses = ["Alive", "Dead", "unknown"] as const;
 
 const filtersInitialState: ColumnFiltersState = [
   {
@@ -42,27 +38,6 @@ export const useFilters = () => {
     setColumnFilters(updated);
   };
 
-  const setMultipleByColumnId = useCallback(
-    <
-      FilterId extends MultipleValuesFilters,
-      Value extends Extract<ColumnFilter, { id: FilterId }>["value"],
-    >(
-      id: FilterId,
-      value: Value,
-    ) => {
-      const updated = columnFilters.map((column) => {
-        if (column.id === id) {
-          return { ...column, value };
-        }
-
-        return column;
-      });
-
-      setColumnFilters(updated);
-    },
-    [columnFilters],
-  );
-
   function getColumnById(id: "name"): Extract<ColumnFilter, { id: typeof id }>;
   function getColumnById(
     id: "status",
@@ -84,9 +59,8 @@ export const useFilters = () => {
       columnFilters,
       setValueByColumnId,
       getColumnById,
-      setMultipleByColumnId,
       clearFilters,
     }),
-    [columnFilters],
+    [columnFilters, getColumnById, setValueByColumnId],
   );
 };
