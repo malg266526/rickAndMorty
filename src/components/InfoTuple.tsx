@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material";
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface InfoTupleProps {
   title: string;

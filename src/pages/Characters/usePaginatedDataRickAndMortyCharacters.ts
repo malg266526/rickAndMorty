@@ -24,10 +24,6 @@ type FetchCharacters = (url: string) => Promise<CharactersResponse>;
 const fetchCharacters: FetchCharacters = (url) =>
   fetch(url).then((response) => response.json());
 
-// usePaginatedDataRickAndMortyCharacters
-// param: (page: number) => fetchCharacters()
-// usePagination
-
 export const usePaginatedDataRickAndMortyCharacters = (
   pageIndex: number,
   pageSize: number,
@@ -49,13 +45,10 @@ export const usePaginatedDataRickAndMortyCharacters = (
     responses.forEach((response) => response.refetch());
   };
 
-  console.log("responses", responses);
-
   const mergedResults = responses
     .map((response) => response?.data?.results ?? [])
     .flat();
 
-  // Todo handle errors
   const mergedErrors = responses
     .filter((response) => response.isError)
     .map((response) => response.error);

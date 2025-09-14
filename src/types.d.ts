@@ -7,10 +7,12 @@ interface Character {
   species: string;
   type: string;
   gender: "Male" | "Female" | "Genderless" | "unknown";
-  origin: object;
+  origin: {
+    name: string;
+  };
   location: object;
   image: string;
-  episodes: string[];
+  episode: string[];
   url: string;
   created: string;
 }

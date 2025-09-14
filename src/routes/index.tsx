@@ -7,6 +7,8 @@ import { usePaginatedDataRickAndMortyCharacters } from "../pages/Characters/useP
 import { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorAlert } from "../components/ErrorAlert.tsx";
+import { ErrorInfo } from "../components/ErrorInfo.tsx";
+import { RefetchButton } from "../components/RefetchButton.tsx";
 
 const searchParamsSchema = zod.object({
   pageIndex: zod.number().optional(),
@@ -46,7 +48,7 @@ function Index() {
     pagination.pageSize,
   );
 
-  const { status, data, error } = charactersResult;
+  const pagesCount = charactersResult.data?.info.pages;
 
   return (
     <ErrorBoundary FallbackComponent={ErrorAlert}>
@@ -63,15 +65,23 @@ function Index() {
           Rick & Morty Characters
         </Typography>
 
-        {status === "loading" && (
+        {charactersResult.status === "loading" && (
           <Skeleton variant="rectangular" width={210} height={60} />
         )}
 
-        {status === "success" && (
+        {charactersResult.status === "error" && (
+          <ErrorInfo message={charactersResult.error[0].message}>
+            <RefetchButton refetch={charactersResult.refetch} />
+          </ErrorInfo>
+        )}
+
+        {charactersResult.status === "success" && (
           <CharactersTable
-            characters={data.results}
+            characters={charactersResult.data.results}
             pagination={pagination}
             setPagination={setPagination}
+            pagesCount={pagesCount}
+            refetch={charactersResult.refetch}
           />
         )}
       </Container>

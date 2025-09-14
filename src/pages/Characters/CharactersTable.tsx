@@ -5,8 +5,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Box, Button, Stack } from "@mui/material";
-import { usePaginatedDataRickAndMortyCharacters } from "./usePaginatedDataRickAndMortyCharacters.ts";
+import { Box, Stack } from "@mui/material";
 import { Spacing } from "../../constants/spacing.ts";
 import type { CharacterRow } from "./columns.tsx";
 import { columns } from "./columns.tsx";
@@ -14,27 +13,25 @@ import { useFilters } from "../../hooks/useFilters.ts";
 import { Pagination } from "../../components/Pagination.tsx";
 import type { PaginationType } from "../../components/Pagination.tsx";
 import { Filters } from "./Filters.tsx";
+import { RefetchButton } from "../../components/RefetchButton.tsx";
 
 interface CharactersTableProps {
   pagination: PaginationType;
   setPagination: (pagination: PaginationType) => void;
   characters: Character[];
+  pagesCount: number;
+  refetch: () => void;
 }
 
 export const CharactersTable = ({
   pagination,
   characters,
   setPagination,
+  pagesCount,
+  refetch,
 }: CharactersTableProps) => {
   const { columnFilters, setValueByColumnId, getColumnById, clearFilters } =
     useFilters();
-
-  const charactersResult = usePaginatedDataRickAndMortyCharacters(
-    pagination.pageIndex,
-    pagination.pageSize,
-  );
-
-  const pagesCount = charactersResult.data?.info.pages;
 
   const table = useReactTable<CharacterRow>({
     data: characters || [],
@@ -79,12 +76,7 @@ export const CharactersTable = ({
           }
           clearFilters={clearFilters}
         />
-        <Button
-          sx={{ width: 200, height: 46 }}
-          onClick={charactersResult.refetch}
-        >
-          Refresh data
-        </Button>
+        <RefetchButton refetch={refetch} />
       </Stack>
 
       <Box component="table" sx={{ width: "50%" }}>
